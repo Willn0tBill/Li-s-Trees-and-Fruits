@@ -1,37 +1,50 @@
-function goTo(page) {
-  createFruits();
-  setTimeout(() => {
-    window.location.href = page;
-  }, 3000); // 3-second animation before page changes
-}
+// Select all navigation buttons
+const buttons = document.querySelectorAll("nav button");
 
-/* Falling fruits animation */
-function createFruits() {
+buttons.forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    const targetPage = btn.getAttribute("data-page");
+
+    // Prevent reloading the current page
+    if (window.location.pathname.endsWith(targetPage)) return;
+
+    // Start falling fruits animation
+    startFallingFruits();
+
+    // Navigate to new page after it fully loads
+    // Use window.location (animation continues until browser loads next page)
+    window.location.href = targetPage;
+  });
+});
+
+function startFallingFruits() {
   const fruitColors = ["#ff4d4d", "#ffcc00", "#66cc33", "#ff6600"];
-  for (let i = 0; i < 20; i++) {
+  
+  // Create fruits continuously
+  const interval = setInterval(() => {
     const fruit = document.createElement("div");
     fruit.style.position = "fixed";
-    fruit.style.top = "-50px";
+    fruit.style.top = "-30px";
     fruit.style.left = Math.random() * window.innerWidth + "px";
-    fruit.style.width = "20px";
-    fruit.style.height = "20px";
+    fruit.style.width = "15px";
+    fruit.style.height = "15px";
     fruit.style.backgroundColor = fruitColors[Math.floor(Math.random() * fruitColors.length)];
     fruit.style.borderRadius = "50%";
-    fruit.style.opacity = Math.random();
     fruit.style.zIndex = 9999;
     document.body.appendChild(fruit);
 
-    const fallDuration = 3000 + Math.random() * 2000;
+    const fallDuration = 1000 + Math.random() * 500; // ~1-1.5s
+
     fruit.animate(
       [
         { transform: "translateY(0)" },
         { transform: `translateY(${window.innerHeight + 50}px)` }
       ],
-      { duration: fallDuration, iterations: 1 }
+      { duration: fallDuration, iterations: 1, easing: "linear" }
     );
 
     setTimeout(() => {
       fruit.remove();
     }, fallDuration);
-  }
+  }, 100); // 1 fruit every 0.1s
 }
